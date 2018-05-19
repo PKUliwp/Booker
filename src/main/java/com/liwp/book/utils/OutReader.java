@@ -30,7 +30,7 @@ public class OutReader {
         Books books = new Books();
         books.setName(name);
 
-        System.out.println(chapters.size());
+        log.info(name + String.valueOf(chapters.size()));
 
         int count = 0;
         for(Element e : chapters) {
@@ -53,7 +53,7 @@ public class OutReader {
         FileWriter fileWriter = new FileWriter(outFile);
 
         for(Book book : books.getLists()) {
-            fileWriter.write(String.valueOf(book.getIndex()) + "  " + book.getTitle() + "\n\n\n");
+            //fileWriter.write(String.valueOf(book.getIndex()) + "  " + book.getTitle() + "\n\n\n");
             fileWriter.write(book.getContent() + "\n\n\n");
         }
 
@@ -62,6 +62,6 @@ public class OutReader {
 
     public static void main(String args[]) throws Exception {
         OutReader outr = new OutReader();
-        outr.getBooks("");
+
     }
 }

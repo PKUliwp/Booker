@@ -2,6 +2,7 @@ package com.liwp.book.utils;
 
 
 import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by liwp on 2018/5/11.
  */
+@Slf4j
 @Component
 public class OneReader {
 
@@ -99,7 +101,16 @@ public class OneReader {
         URL url = new URL(link);
         URLConnection uc = url.openConnection();
         uc.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-        Document doc = Jsoup.parse(uc.getInputStream(), "gbk", "");
+        Document doc = new Document("");
+
+        try {
+            doc = Jsoup.parse(uc.getInputStream(), "gbk", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Thread.sleep(3000);
+            return getDoc(link);
+        }
+
         return doc;
     }
 
@@ -113,6 +124,18 @@ public class OneReader {
                 .replaceAll("\r", "\n\n");
         String[] lines = res.split("\n");
         //System.out.println(res);
+
+        int count = 0;
+        for(String line : lines) {
+            if(line.length() > 5) count ++;
+        }
+        //System.out.println(count);
+        if(count < 21) {
+            //log.info(String.valueOf(count));
+            res = res.replaceAll("　　", "\n　　");
+            lines = res.split("\n");
+        }
+
         StringBuilder builder = new StringBuilder();
         for(String line : lines) {
             //if(line.indexOf("&nbsp") > 0) continue;
@@ -131,6 +154,7 @@ public class OneReader {
 
     public static void main(String args[]) throws Exception {
         OneReader oner = new OneReader();
+        //System.out.println(oner.getPage("http://www.diyibanzhu.xyz/7/7260/121728.html").getContent());
     }
 
 
